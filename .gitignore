@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# ’Ç‰Á
+include/
+resources/
+vc2015/
+vc2017/
