@@ -6,19 +6,21 @@ using namespace ci::app;
 Particle::Particle(gl::Texture texture, Vec3f pos) :speed(0.5f) {
 	image = texture;
 
-	for (int i = 0; i < 30; ++i) {
+	for (int i = 0; i < MAX; ++i) {
 		position[i] = pos;
-		angle[i] = randVec3f() * 1.f;
+		angle[i] = Vec3f(randFloat(-1.f, 1.f), randFloat(-1.f, 1.f), randFloat(-1.f, 1.f));
 	}
 
 	surviveTime = 60;
+
+	data = new int[MAX];
 }
 
 Particle::~Particle() {
-
+	delete data;
 }
 
-void Particle::drawBillboardTexture(const Vec3f& pos, const Vec2f& scale, float rotationDegrees,
+void Particle::DrawBillboardTexture(const Vec3f& pos, const Vec2f& scale, float rotationDegrees,
 	const Vec3f& bbRight, const Vec3f& bbUp, const gl::Texture& texture, const Area& area) {
 	texture.enableAndBind();
 
@@ -53,15 +55,56 @@ void Particle::drawBillboardTexture(const Vec3f& pos, const Vec2f& scale, float 
 	texture.disable();
 }
 
-void Particle::UpDate(const Matrix44f& m, const Vec3f& r, const Vec3f& u) {
-	mat = Matrix44f::identity();
-	//mat.invert();
-	right = mat.transformVec(r);
-	up = mat.transformVec(u);
+void Particle::Swap(int *a, int *b) {
+	int n = *a; *a = *b; *b = n;
+}
 
-	for (int i = 0; i < 30; ++i) {
+void Particle::QuickSort(int *s, int *e) {
+	if (s == e)return;
+
+	int pivot = *s;
+
+	int *p1 = s, *p2 = e;
+
+	while (true)
+	{
+		if (*p1 >= pivot && *p2 < pivot) {
+			Swap(p1, p2);
+		}
+
+		if (*p1 < pivot) {
+			++p1;
+			if(p1 == p2)break;
+		}
+
+		if (*p2 >= pivot) {
+			--p2;
+			if (p1 == p2)break;
+		}
+	}
+
+	if (p1 != s && *p1 >= pivot)--p1;
+	else if (p2 != e)++p2;
+
+	QuickSort(s, p1);
+	QuickSort(p2, e);
+}
+
+void Particle::UpDate(const Vec3f& pos, const Vec3f& r, const Vec3f& u) {
+	right = Matrix44f::identity().transformVec(r);
+	up = Matrix44f::identity().transformVec(u);
+
+	for (int i = 0; i < MAX; ++i) {
 		position[i] += angle[i] * speed;
 	}
+
+	for (int i = 0; i < MAX; ++i) {
+		data[i] = position[i].z - pos.z;
+	}
+
+	QuickSort(&data[0], &data[MAX - 1]);
+
+	
 
 	surviveTime -= 1;
 }
@@ -70,12 +113,15 @@ void Particle::Draw() {
 	gl::enableAlphaBlending();
 
 	const int cut = 100;
-	int index = 10 - surviveTime / 6;
+	/*const int index = 10 - surviveTime / 6;
 	int tx = (index % 7) * cut;
 	int ty = (index / 7) * cut;
+*/
+	int tx = 4 * cut;
+	int ty = 0;
 
-	for (int i = 0; i < 30; ++i) {
-		drawBillboardTexture(position[i], /*scale = */ Vec2f(5.f, 5.f), /*rotationDegree = */0,
+	for (int i = 0; i < MAX; ++i) {
+		DrawBillboardTexture(position[i], /*scale = */ Vec2f(5.f, 5.f), /*rotationDegree = */0,
 			right, up, image, Area(tx, ty, tx + cut, ty + cut));
 	}
 

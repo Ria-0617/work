@@ -38,8 +38,6 @@ class TemplateProjectApp : public ci::app::AppNative,JoyController {
 	const int enemyMaxNum = 100;
 	int shotTime = 0;
 
-	const int particleMaxNum = 30;
-
 	ci::TriMesh enemyMesh;
 	ci::gl::VboMeshRef enemyVboMesh;
 

@@ -19,7 +19,7 @@ void TemplateProjectApp::setup()
 	camera1 = new GameCamera(player->GetPos(), getWindowWidth(), getWindowHeight());
 	ui = new UI(getWindowWidth(), getWindowHeight());
 
-	for (int i = 1; i < 100; ++i)
+	for (int i = 1; i < enemyMaxNum; ++i)
 		boids.push_back(Boid(enemyVboMesh));
 
 	gl::enable(GL_COLOR_MATERIAL);
@@ -62,18 +62,18 @@ void TemplateProjectApp::update()
 			itr = bullets.erase(itr);
 			itr2 = boids.erase(itr2);
 			ui->PlusScore(100);
-
-			if (boids.size() > enemyMaxNum)continue;
-			//boids.push_back(Boid(enemyVboMesh, itr2->GetPosition()));
 		}
 	}
 
 	for (auto itr = particles.begin(); itr != particles.end(); ++itr) {
-		itr->UpDate(camera1->GetMatrix(), camera1->getRight(), camera1->getUp());
+		itr->UpDate(camera1->GetPosition(), camera1->GetRight(), camera1->GetUp());
 
 		if (itr->IsDead())
 			itr = particles.erase(itr);
 	}
+
+	if (boids.size() > enemyMaxNum) return;
+	boids.push_back(Boid(enemyVboMesh));
 }
 
 void TemplateProjectApp::draw()

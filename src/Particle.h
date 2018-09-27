@@ -7,8 +7,10 @@
 
 class Particle {
 private:
-	ci::Vec3f position[30];
-	ci::Vec3f angle[30];
+	static const int MAX = 30;
+
+	ci::Vec3f position[MAX];
+	ci::Vec3f angle[MAX];
 	const float speed;
 
 	ci::Vec3f right, up;
@@ -18,14 +20,19 @@ private:
 
 	ci::gl::Texture image;
 
+	int *data;
+
 public:
 	Particle(ci::gl::Texture texture, ci::Vec3f pos);
 	~Particle();
 
-	void drawBillboardTexture(const ci::Vec3f& pos, const ci::Vec2f& scale, float rotationDegrees,
+	void DrawBillboardTexture(const ci::Vec3f& pos, const ci::Vec2f& scale, float rotationDegrees,
 		const ci::Vec3f& bbRight, const ci::Vec3f& bbUp, const ci::gl::Texture& texture, const ci::Area& area);
 
-	void UpDate(const ci::Matrix44f& m, const ci::Vec3f& r, const ci::Vec3f& u);
+	void Swap(int*, int*);
+	void QuickSort(int *s, int *e);
+
+	void UpDate(const ci::Vec3f& pos, const ci::Vec3f& r, const ci::Vec3f& u);
 	void Draw();
 	bool IsDead();
 };

@@ -13,9 +13,12 @@ GameCamera::GameCamera(Vec3f targetPos, int windowWidth, int windowHeight) {
 	cameraCurrentPosition = position;
 	rotationSpeed = 3.f;
 	limitAngle = 45.f;
+	matrix = Matrix44f::identity();
 
 	right = Vec3f(0, 0, 0);
 	up = Vec3f(0, 0, 0);
+
+	viewMatrix = Matrix44f::identity();
 
 	camera = CameraPersp(windowWidth, windowHeight, fov, 0.1f, 100.f);
 	camera.setEyePoint(position);
@@ -43,6 +46,7 @@ void GameCamera::UpDate(Vec3f targetPos) {
 	camera.setCenterOfInterestPoint(t + Vec3f(0.f, 2.f, 0.f));
 
 	camera.getBillboardVectors(&right, &up);
+	viewMatrix = camera.getModelViewMatrix();
 }
 
 void GameCamera::Draw() {

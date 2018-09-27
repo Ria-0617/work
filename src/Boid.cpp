@@ -15,6 +15,10 @@ Boid::Boid(ci::gl::VboMeshRef vbo, Vec3f pos) :Boid(vbo) {
 	position = pos;
 }
 
+Boid::~Boid() {
+
+}
+
 bool Boid::OutOfViewRange(Boid& boid, float viewAngleRange, float viewDistanceRange) {
 	Vec3f neighbors = (boid.position - position).normalized();
 

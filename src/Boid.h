@@ -31,6 +31,7 @@ protected:
 public:
 	Boid(ci::gl::VboMeshRef);
 	Boid(ci::gl::VboMeshRef, ci::Vec3f);
+	~Boid();
 
 	ci::Vec3f GetPosition() {
 		return position;
