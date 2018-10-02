@@ -20,7 +20,7 @@ private:
 
 	ci::gl::Texture image;
 
-	int *data;
+	float *data;
 
 public:
 	Particle(ci::gl::Texture texture, ci::Vec3f pos);
@@ -29,8 +29,8 @@ public:
 	void DrawBillboardTexture(const ci::Vec3f& pos, const ci::Vec2f& scale, float rotationDegrees,
 		const ci::Vec3f& bbRight, const ci::Vec3f& bbUp, const ci::gl::Texture& texture, const ci::Area& area);
 
-	void Swap(int*, int*);
-	void QuickSort(int *s, int *e);
+	void Swap(float*, float*);
+	void QuickSort(float *s, float *e);
 
 	void UpDate(const ci::Vec3f& pos, const ci::Vec3f& r, const ci::Vec3f& u);
 	void Draw();

@@ -11,13 +11,13 @@ Particle::Particle(gl::Texture texture, Vec3f pos) :speed(0.5f) {
 		angle[i] = Vec3f(randFloat(-1.f, 1.f), randFloat(-1.f, 1.f), randFloat(-1.f, 1.f));
 	}
 
-	surviveTime = 60;
+	surviveTime = 15;
 
-	data = new int[MAX];
+	data = new float[MAX];
 }
 
 Particle::~Particle() {
-	delete data;
+
 }
 
 void Particle::DrawBillboardTexture(const Vec3f& pos, const Vec2f& scale, float rotationDegrees,
@@ -55,35 +55,36 @@ void Particle::DrawBillboardTexture(const Vec3f& pos, const Vec2f& scale, float 
 	texture.disable();
 }
 
-void Particle::Swap(int *a, int *b) {
+void Particle::Swap(float *a,float *b) {
 	int n = *a; *a = *b; *b = n;
 }
 
-void Particle::QuickSort(int *s, int *e) {
+// ¸‡
+void Particle::QuickSort(float *s, float *e) {
 	if (s == e)return;
 
-	int pivot = *s;
+	float pivot = *s;
 
-	int *p1 = s, *p2 = e;
+	float *p1 = s, *p2 = e;
 
 	while (true)
 	{
-		if (*p1 >= pivot && *p2 < pivot) {
+		if (*p1 <= pivot && *p2 > pivot) {
 			Swap(p1, p2);
 		}
 
-		if (*p1 < pivot) {
+		if (*p1 > pivot) {
 			++p1;
 			if(p1 == p2)break;
 		}
 
-		if (*p2 >= pivot) {
+		if (*p2 <= pivot) {
 			--p2;
 			if (p1 == p2)break;
 		}
 	}
 
-	if (p1 != s && *p1 >= pivot)--p1;
+	if (p1 != s && *p1 <= pivot)--p1;
 	else if (p2 != e)++p2;
 
 	QuickSort(s, p1);
@@ -104,7 +105,15 @@ void Particle::UpDate(const Vec3f& pos, const Vec3f& r, const Vec3f& u) {
 
 	QuickSort(&data[0], &data[MAX - 1]);
 
-	
+	for (int i = 0; i < MAX; ++i) {
+		position[i].z = data[i] + pos.z;
+	}
+
+
+	for (int i = 0; i < MAX; ++i)
+		console() << data[i] << " " << position[i] << std::endl;
+
+
 
 	surviveTime -= 1;
 }
@@ -113,12 +122,12 @@ void Particle::Draw() {
 	gl::enableAlphaBlending();
 
 	const int cut = 100;
-	/*const int index = 10 - surviveTime / 6;
+	const int index = 15 - surviveTime;
 	int tx = (index % 7) * cut;
-	int ty = (index / 7) * cut;
-*/
-	int tx = 4 * cut;
 	int ty = 0;
+
+	/*int tx = 3 * cut;
+	int ty = 1;*/
 
 	for (int i = 0; i < MAX; ++i) {
 		DrawBillboardTexture(position[i], /*scale = */ Vec2f(5.f, 5.f), /*rotationDegree = */0,
